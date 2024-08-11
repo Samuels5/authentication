@@ -14,13 +14,26 @@ const SignUp = () => {
   const onSubmit = handleSubmit((data) => {
     console.log(data)
     data = { ...data, ...{ role: "user" } };
-    axios
-      .post("https://akil-backend.onrender.com/signup", data)
-      .then((response) => {
-        if (response.status == 200) {
-          localStorage.setItem("email", data.email);
-          router.push("/verify");
-          reset();}}).catch((e)=> {console.log(e)});});
+fetch("https://akil-backend.onrender.com/signup", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify(data),
+})
+  .then((response) => {
+    if (response.ok) {
+      // Check if the response status is in the range 200-299
+      localStorage.setItem("email", data.email);
+      router.push("/verify");
+      reset();
+    } else {
+      throw new Error("Network response was not ok."); // Handle non-200 responses
+    }
+  })
+  .catch((e) => {
+    console.log(e);
+  });});
 
   return (
     <div className="flex flex-col items-center gap-6">

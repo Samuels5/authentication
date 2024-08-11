@@ -14,17 +14,31 @@ const VerifyEmail = () => {
   const onSubmit = handleSubmit((data) => {
     console.log(data)
     const total = data.n1 + data.n2 + data.n3 + data.n4;
-    axios
-      .post("https://akil-backend.onrender.com/verify-email", {
-        email: localStorage.getItem("email"),
-        otp: total,
-      })
-      .then((response) => {
-        cookies.set("access-token", response.data.data.accessToken);
-        router.push("/app");
-        reset();
-        router.refresh();
-      }).catch((e) => {console.log(e)});});
+fetch("https://akil-backend.onrender.com/verify-email", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    email: localStorage.getItem("email"),
+    otp: total,
+  }),
+})
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok"); // Handle non-200 responses
+    }
+    return response.json(); // Parse the JSON from the response
+  })
+  .then((data) => {
+    cookies.set("access-token", data.data.accessToken);
+    router.push("/app");
+    reset();
+    router.refresh();
+  })
+  .catch((e) => {
+    console.log(e);
+  });});
 
   return (
     <div className="flex flex-col items-center gap-10">

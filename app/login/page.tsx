@@ -14,13 +14,27 @@ const Login = () => {
   const {register,handleSubmit,formState: { errors },reset,} = forms
   const onSubmit = handleSubmit((data) => {
     console.log(data)
-    axios
-      .post("https://akil-backend.onrender.com/login", data)
-      .then((response) => {
-        if (response.status == 200) {
-          cookies.set("access-token", response.data.data.accessToken);
-          router.push("/app");
-          router.refresh();}}).catch((e) => {console.log(e)});});
+fetch("https://akil-backend.onrender.com/login", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify(data),
+})
+  .then((response) => {
+    if (response.ok) {
+      return response.json(); // Parse the JSON from the response
+    }
+    throw new Error("Network response was not ok.");
+  })
+  .then((data) => {
+    cookies.set("access-token", data.data.accessToken);
+    router.push("/app");
+    router.refresh();
+  })
+  .catch((e) => {
+    console.log(e);
+  });});
 
   return (
     <div className="flex flex-col items-center gap-6 w-6/12">
