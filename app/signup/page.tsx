@@ -2,7 +2,6 @@
 import React from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
